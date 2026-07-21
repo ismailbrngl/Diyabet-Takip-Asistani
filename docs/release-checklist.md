@@ -9,14 +9,12 @@
 - [ ] Türkçe metinler yazım kontrolü
 - [ ] Grafiklerde boş veri metni Türkçe görünüyor
 
-## B) Reklam ve Gelir Modeli
+## B) Reklam
 
 - [ ] AdMob App ID dogru
 - [ ] Banner Ad Unit ID dogru
 - [ ] Debug'da test reklam görünüyor
 - [ ] Release'de gerçek reklam birimi kullanılıyor
-- [ ] "Reklamları Kaldır" ürünü: `remove_ads_forever`
-- [ ] Satın alma sonrası reklam gizleniyor
 
 ## C) Politika ve Hukuki Alanlar
 
@@ -39,7 +37,7 @@
 - [ ] Internal testing oluşturuldu
 - [ ] AAB yüklendi
 - [ ] Test kullanıcısı davet edildi
-- [ ] Reklam ve satın alma gerçek test yapıldı
+- [ ] Reklam gerçek test yapıldı
 - [ ] Üretim (production) yayınına geçiş kararı verildi
 
 ## Not

@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Brand -->
-    <color name="primary">#1976D2</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_light">#64B5F6</color>
-    <color name="accent">#90CAF9</color>
+    <color name="primary">#5B9BD5</color>
+    <color name="primary_dark">#4A8BC4</color>
+    <color name="primary_light">#8BB8E8</color>
+    <color name="accent">#A8CFF5</color>
     <color name="on_primary">#FFFFFF</color>
 
-    <!-- Surface roles -->
-    <color name="background">#1C1C1E</color>
-    <color name="surface">#2C2C2E</color>
-    <color name="surface_variant">#34343A</color>
-    <color name="outline">#4D647B</color>
-    <color name="text_primary">#CFE6FF</color>
-    <color name="text_secondary">#9CC6F0</color>
-    <color name="on_surface">#CFE6FF</color>
-    <color name="on_surface_variant">#9CC6F0</color>
+    <!-- Surface roles — yumuşak, biraz daha açık koyu tonlar -->
+    <color name="background">#2A2D34</color>
+    <color name="surface">#383B44</color>
+    <color name="surface_variant">#444851</color>
+    <color name="outline">#6B7585</color>
+    <color name="text_primary">#F1F5FA</color>
+    <color name="text_secondary">#C2CDDB</color>
+    <color name="on_surface">#F1F5FA</color>
+    <color name="on_surface_variant">#C2CDDB</color>
     <color name="white">#FFFFFF</color>
-    <color name="toolbar_title">#E6FFFFFF</color>
-    <color name="widget_subtle_text">#DDDDDD</color>
+    <color name="toolbar_title">#F5F8FC</color>
+    <color name="widget_subtle_text">#AEB6C4</color>
+    <color name="toggle_track_night">#4A6FA5</color>
 
     <!-- Şeker durumu -->
-    <color name="glucose_low">#EF9A9A</color>
-    <color name="glucose_normal">#81C784</color>
+    <color name="glucose_low">#F4A5A5</color>
+    <color name="glucose_normal">#8FD694</color>
     <color name="glucose_high">#FFCC80</color>
 
     <!-- İnsülin -->
-    <color name="insulin_done">#81C784</color>
-    <color name="insulin_pending">#616161</color>
+    <color name="insulin_done">#8FD694</color>
+    <color name="insulin_pending">#949AA6</color>
     <color name="card_background">@color/surface</color>
 
     <!-- Bottom nav -->
-    <color name="nav_selected">#1976D2</color>
-    <color name="nav_unselected">#64B5F6</color>
+    <color name="nav_selected">#5B9BD5</color>
+    <color name="nav_unselected">#9AADBE</color>
 </resources>

@@ -19,6 +19,7 @@
     <color name="white">#FFFFFF</color>
     <color name="toolbar_title">#E6FFFFFF</color>
     <color name="widget_subtle_text">#DDDDDD</color>
+    <color name="toggle_track_night">#1A237E</color>
 
     <!-- Şeker durumu -->
     <color name="glucose_low">#EF5350</color>

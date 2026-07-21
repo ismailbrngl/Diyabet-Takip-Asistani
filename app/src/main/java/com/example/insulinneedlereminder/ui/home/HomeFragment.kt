@@ -76,7 +76,10 @@ class HomeFragment : Fragment() {
         insulinViewModel.todayRecords.observe(viewLifecycleOwner) { records ->
             val done = records.count { it.isDone }
             val total = records.size
-            binding.tvInsulinStatus.text = "Bugün: $done / $total iğne yapıldı"
+
+            // Bugün için planlanmış/eklenmiş iğne yoksa paydada '0' yerine '-' gösteriyoruz
+            val totalText = if (total > 0) "$total" else "-"
+            binding.tvInsulinStatus.text = "Bugün: $done / $totalText iğne yapıldı"
 
             val sabah = records.find { it.timeLabel == "Sabah" }
             val ogle = records.find { it.timeLabel == "Öğle" }
@@ -176,7 +179,7 @@ class HomeFragment : Fragment() {
             val newDark = !prefs.getBoolean("is_dark", false)
             prefs.edit().putBoolean("is_dark", newDark).apply()
 
-            // Ağır geçiş hissini azaltmak için toggle'ı anında güncelliyoruz.
+            // Toggle'ı anında güncelliyoruz
             updateThemeButtonInstant(newDark)
 
             val targetMode = if (newDark) {
@@ -184,8 +187,13 @@ class HomeFragment : Fragment() {
             } else {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
+
             if (AppCompatDelegate.getDefaultNightMode() != targetMode) {
                 AppCompatDelegate.setDefaultNightMode(targetMode)
+
+                // BURASI ÇÖZÜM: Aktiviteyi ve fragment'ları anında yeniden oluşturarak
+                // ortadaki kartların/arkaplanların karanlıkta kalmasını engeller.
+                requireActivity().recreate()
             }
         }
     }

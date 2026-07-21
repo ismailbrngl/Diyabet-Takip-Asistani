@@ -14,3 +14,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# DGS araç çıktıları / indirilen pdf-lib
+/DGS_karisik_sayfalar.pdf
+/DGS_karisik_matematik.pdf
+/DGS_karisik_sayisal.pdf
+/tools/dgs-merge-pdf/vendor/

@@ -12,10 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.insulinneedlereminder.R
 import com.example.insulinneedlereminder.databinding.FragmentReportBinding
 import com.example.insulinneedlereminder.data.entity.GlucoseRecord
+import com.example.insulinneedlereminder.data.entity.InsulinRecord
 import com.example.insulinneedlereminder.ui.glucose.GlucoseViewModel
 import com.example.insulinneedlereminder.ui.insulin.InsulinViewModel
 import com.example.insulinneedlereminder.util.DateUtils
 import com.example.insulinneedlereminder.util.GlucoseStatus
+import com.example.insulinneedlereminder.util.PrefsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,11 +30,14 @@ class ReportFragment : Fragment(R.layout.fragment_report) {
     private val glucoseViewModel: GlucoseViewModel by activityViewModels()
     private val insulinViewModel: InsulinViewModel by activityViewModels()
     private var latestGlucoseRecords: List<GlucoseRecord> = emptyList()
-    private var latestInsulinRecords: List<com.example.insulinneedlereminder.data.entity.InsulinRecord> = emptyList()
+    private var latestInsulinRecords: List<InsulinRecord> = emptyList()
+
+    private lateinit var prefs: PrefsManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentReportBinding.bind(view)
+        prefs = PrefsManager(requireContext())
 
         setupButtons()
         observeData()
@@ -58,15 +63,19 @@ class ReportFragment : Fragment(R.layout.fragment_report) {
             return
         }
 
+        val lowThresh = prefs.glucoseLowThreshold
+        val highThresh = prefs.glucoseHighThreshold
+
         val values = glucoseRecords.map { it.value }
         binding.tvAvg.text = "${values.average().toInt()}"
         binding.tvMin.text = "${values.minOrNull() ?: "-"}"
         binding.tvMax.text = "${values.maxOrNull() ?: "-"}"
         binding.tvTotal.text = "${glucoseRecords.size}"
 
-        val lowCount = glucoseRecords.count { GlucoseStatus.from(it.value) == GlucoseStatus.LOW }
-        val normalCount = glucoseRecords.count { GlucoseStatus.from(it.value) == GlucoseStatus.NORMAL }
-        val highCount = glucoseRecords.count { GlucoseStatus.from(it.value) == GlucoseStatus.HIGH }
+        val lowCount = glucoseRecords.count { GlucoseStatus.from(it.value, lowThresh, highThresh) == GlucoseStatus.LOW }
+        val normalCount = glucoseRecords.count { GlucoseStatus.from(it.value, lowThresh, highThresh) == GlucoseStatus.NORMAL }
+        val highCount = glucoseRecords.count { GlucoseStatus.from(it.value, lowThresh, highThresh) == GlucoseStatus.HIGH }
+
         binding.tvLow.text = "$lowCount"
         binding.tvNormal.text = "$normalCount"
         binding.tvHigh.text = "$highCount"
@@ -80,23 +89,23 @@ class ReportFragment : Fragment(R.layout.fragment_report) {
         val evening = insulinRecords.filter { it.timeLabel.contains("Akşam", ignoreCase = true) || it.timeLabel.contains("Aksam", ignoreCase = true) }.sumOf { it.units }
         binding.tvInsulinSummary.text = "Toplam: $insulinTotal u  •  Sabah: $morning u  •  Öğle: $noon u  •  Akşam: $evening u"
 
-        binding.tvPeriod7.text = formatPeriodStats(glucoseRecords, 7)
-        binding.tvPeriod14.text = formatPeriodStats(glucoseRecords, 14)
-        binding.tvPeriod30.text = formatPeriodStats(glucoseRecords, 30)
+        binding.tvPeriod7.text = formatPeriodStats(glucoseRecords, 7, lowThresh, highThresh)
+        binding.tvPeriod14.text = formatPeriodStats(glucoseRecords, 14, lowThresh, highThresh)
+        binding.tvPeriod30.text = formatPeriodStats(glucoseRecords, 30, lowThresh, highThresh)
 
         binding.layoutStats.visibility = View.VISIBLE
         binding.tvNoData.visibility = View.GONE
     }
 
-    private fun formatPeriodStats(records: List<GlucoseRecord>, days: Int): String {
+    private fun formatPeriodStats(records: List<GlucoseRecord>, days: Int, lowThresh: Int, highThresh: Int): String {
         val fromDate = DateUtils.daysAgo(days)
         val scoped = records.filter { it.date >= fromDate }
         if (scoped.isEmpty()) {
             return "$days gün: kayıt yok"
         }
         val avg = scoped.map { it.value }.average().toInt()
-        val low = scoped.count { GlucoseStatus.from(it.value) == GlucoseStatus.LOW }
-        val high = scoped.count { GlucoseStatus.from(it.value) == GlucoseStatus.HIGH }
+        val low = scoped.count { GlucoseStatus.from(it.value, lowThresh, highThresh) == GlucoseStatus.LOW }
+        val high = scoped.count { GlucoseStatus.from(it.value, lowThresh, highThresh) == GlucoseStatus.HIGH }
         val lowPct = (low * 100) / scoped.size
         val highPct = (high * 100) / scoped.size
         return "$days gün: ort $avg mg/dL • düşük %$lowPct • yüksek %$highPct"
@@ -113,8 +122,9 @@ class ReportFragment : Fragment(R.layout.fragment_report) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val fromDate = DateUtils.daysAgo(days)
-                val filteredGlucose = glucoseViewModel.allRecords.value?.filter { it.date >= fromDate } ?: emptyList()
-                val filteredInsulin = insulinViewModel.allRecords.value?.filter { it.date >= fromDate } ?: emptyList()
+                // HATA DÜZELTİLDİ: ViewModel.value yerine doğrudan bellekteki listeyi kullanıyoruz.
+                val filteredGlucose = latestGlucoseRecords.filter { it.date >= fromDate }
+                val filteredInsulin = latestInsulinRecords.filter { it.date >= fromDate }
 
                 val context = context ?: return@launch
                 val pdfFile = PdfReportGenerator.generate(context, filteredGlucose, filteredInsulin, period)
@@ -138,7 +148,7 @@ class ReportFragment : Fragment(R.layout.fragment_report) {
     private fun shareReports(pdfFile: java.io.File, csvFile: java.io.File) {
         val pdfUri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", pdfFile)
         val csvUri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", csvFile)
-        val uris = arrayListOf<Uri>(pdfUri, csvUri)
+        val uris = arrayListOf(pdfUri, csvUri)
         val intent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
             type = "*/*"
             putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)

@@ -1,12 +1,13 @@
 package com.example.insulinneedlereminder.ui.chart
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.insulinneedlereminder.R
 import com.example.insulinneedlereminder.data.db.AppDatabase
 import com.example.insulinneedlereminder.data.entity.GlucoseRecord
 import com.example.insulinneedlereminder.data.entity.InsulinRecord
@@ -19,6 +20,8 @@ import com.example.insulinneedlereminder.ui.insulin.InsulinViewModel
 import com.example.insulinneedlereminder.ui.insulin.InsulinViewModelFactory
 import com.example.insulinneedlereminder.util.DateUtils
 import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 
@@ -53,8 +56,48 @@ class ChartFragment : Fragment() {
     }
 
     private fun setupNoDataTexts() {
-        binding.glucoseChart.setNoDataText("Grafik verisi bulunamadı")
-        binding.insulinChart.setNoDataText("Grafik verisi bulunamadı")
+        val noDataColor = themeColor(R.color.text_secondary)
+        binding.glucoseChart.apply {
+            setNoDataText("Grafik verisi bulunamadı")
+            setNoDataTextColor(noDataColor)
+        }
+        binding.insulinChart.apply {
+            setNoDataText("Grafik verisi bulunamadı")
+            setNoDataTextColor(noDataColor)
+        }
+    }
+
+    private fun themeColor(resId: Int): Int =
+        ContextCompat.getColor(requireContext(), resId)
+
+    private fun styleChartAxes(chart: LineChart) {
+        val axisColor = themeColor(R.color.text_secondary)
+        val gridLineColor = themeColor(R.color.outline)
+        chart.xAxis.apply {
+            textColor = axisColor
+            axisLineColor = gridLineColor
+        }
+        chart.axisLeft.apply {
+            textColor = axisColor
+            axisLineColor = gridLineColor
+            this.gridColor = gridLineColor
+        }
+        chart.legend.textColor = themeColor(R.color.text_primary)
+    }
+
+    private fun styleChartAxes(chart: BarChart) {
+        val axisColor = themeColor(R.color.text_secondary)
+        val gridLineColor = themeColor(R.color.outline)
+        chart.xAxis.apply {
+            textColor = axisColor
+            axisLineColor = gridLineColor
+        }
+        chart.axisLeft.apply {
+            textColor = axisColor
+            axisLineColor = gridLineColor
+            this.gridColor = gridLineColor
+        }
+        chart.legend.textColor = themeColor(R.color.text_primary)
     }
 
     private fun observeGlucose() {
@@ -94,11 +137,11 @@ class ChartFragment : Fragment() {
         }
 
         val dataSet = LineDataSet(entries, "Kan Şekeri (mg/dL)").apply {
-            color = Color.parseColor("#2196F3")
-            valueTextColor = Color.parseColor("#212121")
+            color = themeColor(R.color.primary)
+            valueTextColor = themeColor(R.color.text_primary)
             lineWidth = 2f
             circleRadius = 4f
-            setCircleColor(Color.parseColor("#2196F3"))
+            setCircleColor(themeColor(R.color.primary))
             setDrawValues(false)
             mode = LineDataSet.Mode.CUBIC_BEZIER
         }
@@ -109,20 +152,21 @@ class ChartFragment : Fragment() {
             legend.isEnabled = true
             setTouchEnabled(true)
             setPinchZoom(true)
+            styleChartAxes(this)
 
             axisLeft.removeAllLimitLines()
             axisLeft.addLimitLine(
                 LimitLine(70f, "Düşük").apply {
-                    lineColor = Color.parseColor("#F44336")
+                    lineColor = themeColor(R.color.glucose_low)
                     lineWidth = 1f
-                    textColor = Color.parseColor("#F44336")
+                    textColor = themeColor(R.color.glucose_low)
                 }
             )
             axisLeft.addLimitLine(
                 LimitLine(180f, "Yüksek").apply {
-                    lineColor = Color.parseColor("#FF9800")
+                    lineColor = themeColor(R.color.glucose_high)
                     lineWidth = 1f
-                    textColor = Color.parseColor("#FF9800")
+                    textColor = themeColor(R.color.glucose_high)
                 }
             )
 
@@ -165,8 +209,8 @@ class ChartFragment : Fragment() {
         val labels = grouped.keys.toList()
 
         val dataSet = BarDataSet(entries, "Günlük İnsülin (ünite)").apply {
-            color = Color.parseColor("#00BCD4")
-            valueTextColor = Color.parseColor("#212121")
+            color = themeColor(R.color.accent)
+            valueTextColor = themeColor(R.color.text_primary)
         }
 
         binding.insulinChart.apply {
@@ -174,6 +218,7 @@ class ChartFragment : Fragment() {
             description.isEnabled = false
             legend.isEnabled = true
             setTouchEnabled(true)
+            styleChartAxes(this)
 
             xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {

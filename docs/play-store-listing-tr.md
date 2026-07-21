@@ -23,7 +23,6 @@ Uygulama ile:
 - Alarm saatleri belirleyerek hatırlatıcılar oluşturabilirsiniz.
 - Grafik ekranında ölçüm trendlerini görebilirsiniz.
 - Yedek al / yedekten geri yükle özellikleri ile verilerinizi taşıyabilirsiniz.
-- Reklamsız deneyim için uygulama içi satın alma seçeneğini kullanabilirsiniz.
 
 Önemli not:
 

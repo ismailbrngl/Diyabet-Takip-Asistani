@@ -26,7 +26,7 @@
 3. İnsülin kayıt listesi
 4. Grafik ekranı
 5. Alarm ayarları
-6. Yedekleme/satın alma bölümü
+6. Yedekleme bölümü
 
 ## Görsel Metin Önerileri
 

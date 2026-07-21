@@ -6,8 +6,10 @@ import com.example.insulinneedlereminder.data.entity.GlucoseRecord
 import com.example.insulinneedlereminder.data.entity.InsulinRecord
 import com.example.insulinneedlereminder.util.DateUtils
 import com.example.insulinneedlereminder.util.GlucoseStatus
+import com.itextpdf.io.font.PdfEncodings
 import com.itextpdf.io.font.constants.StandardFonts
 import com.itextpdf.kernel.colors.ColorConstants
+import com.itextpdf.kernel.font.PdfFont
 import com.itextpdf.kernel.font.PdfFontFactory
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
@@ -34,14 +36,13 @@ object PdfReportGenerator {
         val pdfDoc = PdfDocument(writer)
         val document = Document(pdfDoc)
 
-        // Türkçe karakter desteği için font ayarı
-        val font = PdfFontFactory.createFont(StandardFonts.HELVETICA, "CP1254")
-        val boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD, "CP1254")
+        // Türkçe karakterlerin düzgün görünmesi için dinamik font yükleme
+        val (font, boldFont) = createPdfFonts(context)
         document.setFont(font)
 
         // BAŞLIK
         document.add(
-            Paragraph("Insülin ve Kan Sekeri Raporu")
+            Paragraph("İnsülin ve Kan Şekeri Raporu")
                 .setFont(boldFont)
                 .setFontSize(20f)
                 .setTextAlignment(TextAlignment.CENTER)
@@ -63,6 +64,7 @@ object PdfReportGenerator {
             val normal = glucoseRecords.count { GlucoseStatus.from(it.value) == GlucoseStatus.NORMAL }
             val high = glucoseRecords.count { GlucoseStatus.from(it.value) == GlucoseStatus.HIGH }
             val tirPercent = (normal * 100) / glucoseRecords.size
+
             val statsTable = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f, 1f, 1f)))
                 .useAllAvailableWidth().setMarginBottom(10f)
 
@@ -70,8 +72,8 @@ object PdfReportGenerator {
                 statsTable.addCell(Cell().add(Paragraph(it).setFont(boldFont)).setBackgroundColor(ColorConstants.LIGHT_GRAY))
             }
             statsTable.addCell("${values.average().toInt()} mg/dL")
-            statsTable.addCell("${values.min()} mg/dL")
-            statsTable.addCell("${values.max()} mg/dL")
+            statsTable.addCell("${values.minOrNull() ?: "-"} mg/dL")
+            statsTable.addCell("${values.maxOrNull() ?: "-"} mg/dL")
             statsTable.addCell("${glucoseRecords.size}")
             document.add(statsTable)
 
@@ -115,10 +117,10 @@ object PdfReportGenerator {
             listOf("Toplam", "Sabah", "Öğle", "Akşam").forEach {
                 insulinSummary.addCell(Cell().add(Paragraph(it).setFont(boldFont)).setBackgroundColor(ColorConstants.LIGHT_GRAY))
             }
-            insulinSummary.addCell(insulinTotal.toString())
-            insulinSummary.addCell(morningTotal.toString())
-            insulinSummary.addCell(noonTotal.toString())
-            insulinSummary.addCell(eveningTotal.toString())
+            insulinSummary.addCell("$insulinTotal u")
+            insulinSummary.addCell("$morningTotal u")
+            insulinSummary.addCell("$noonTotal u")
+            insulinSummary.addCell("$eveningTotal u")
             document.add(insulinSummary)
 
             val insulinTable = Table(UnitValue.createPercentArray(floatArrayOf(2f, 1f, 1f, 2f))).useAllAvailableWidth()
@@ -130,16 +132,48 @@ object PdfReportGenerator {
             insulinRecords.forEach { record ->
                 insulinTable.addCell(DateUtils.formatDateTime(record.date))
                 insulinTable.addCell(record.timeLabel)
-                insulinTable.addCell("${record.units}")
+                insulinTable.addCell("${record.units} u")
                 insulinTable.addCell(record.note.ifEmpty { "-" })
             }
             document.add(insulinTable)
         }
 
-        document.add(Paragraph("\nBu rapor mobil uygulama tarafından otomatik üretilmiştir.")
-            .setFontSize(9f).setTextAlignment(TextAlignment.CENTER).setFontColor(ColorConstants.GRAY))
+        document.add(
+            Paragraph("\nBu rapor mobil uygulama tarafından otomatik üretilmiştir.")
+                .setFontSize(9f)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.GRAY)
+        )
 
         document.close()
         return file
+    }
+
+    /**
+     * Assets içerisindeki font dosyalarını yükler.
+     * Eğer asset bulunamazsa standart HELVETICA fontlarına fallback yapar.
+     */
+    private fun createPdfFonts(context: Context): Pair<PdfFont, PdfFont> {
+        return try {
+            val regularBytes = context.assets.open("fonts/Roboto-Regular.ttf").readBytes()
+            val boldBytes = context.assets.open("fonts/Roboto-Bold.ttf").readBytes()
+
+            val regularFont = PdfFontFactory.createFont(
+                regularBytes,
+                PdfEncodings.IDENTITY_H,
+                PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED
+            )
+            val boldFont = PdfFontFactory.createFont(
+                boldBytes,
+                PdfEncodings.IDENTITY_H,
+                PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED
+            )
+
+            Pair(regularFont, boldFont)
+        } catch (e: Exception) {
+            val regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA, "CP1254")
+            val boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD, "CP1254")
+            Pair(regularFont, boldFont)
+        }
     }
 }

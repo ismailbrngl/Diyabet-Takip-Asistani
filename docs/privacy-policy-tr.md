@@ -22,31 +22,27 @@ Bu veri işlemleri Google'ın kendi gizlilik politikaları kapsamındadır:
 
 - https://policies.google.com/privacy
 
-## 3) Satın Alma İşleme
-
-Uygulama içi satın alma (örneğin `Reklamları Kaldır`) Google Play Billing altyapısı ile gerçekleştirilir. Ödeme bilgileri geliştirici tarafından tutulmaz; işlemler Google Play tarafından yönetilir.
-
-## 4) Veri Paylaşımı
+## 3) Veri Paylaşımı
 
 Geliştirici, kullanıcı tarafından açıkça paylaşılmadıkça sağlık kayıtlarını doğrudan üçüncü taraflarla paylaşmaz.
 
 Yasal zorunluluk veya yetkili kurum talepleri dışında veri aktarımı yapılmaz.
 
-## 5) Veri Güvenliği
+## 4) Veri Güvenliği
 
 Verilerin korunması için makul teknik ve idari önlemler alınmaya çalışılır. Ancak internet üzerinden iletim veya cihaz güvenliği konularında mutlak güvenlik garanti edilemez.
 
-## 6) Çocukların Gizliliği
+## 5) Çocukların Gizliliği
 
 Uygulama, 13 yaş altı çocukları hedefleyerek tasarlanmamıştır.
 
-## 7) Haklarınız ve İletişim
+## 6) Haklarınız ve İletişim
 
 Gizlilikle ilgili sorularınız için geliştirici ile iletişime geçebilirsiniz:
 
 - E-posta: `gskayserig38@gmail.com`
 
-## 8) Değişiklikler
+## 7) Değişiklikler
 
 Bu gizlilik politikası zaman zaman güncellenebilir. Güncel metin uygulama mağaza sayfası veya ilgili bağlantı üzerinden paylaşılır.
 

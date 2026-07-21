@@ -23,7 +23,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Widget.App.Card" parent="">
+    <style name="Widget.App.Card" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">@dimen/radius_md</item>
         <item name="cardElevation">@dimen/elevation_card</item>
         <item name="cardBackgroundColor">@color/card_background</item>
