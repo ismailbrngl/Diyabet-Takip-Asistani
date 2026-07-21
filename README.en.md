@@ -1,4 +1,4 @@
-### [Türkçe](README.md) | English
+[Türkçe](README.md) | English
 
 ---
 
@@ -23,7 +23,7 @@ Diabetes Tracking Assistant is a modern Android application developed to help di
 
 ## ✨ Key Features
 
-*   **Smart Insulin Reminder:** Scheduled injection notifications powered by `WorkManager`.
+*   **Smart Insulin Reminder:** Scheduled injection notifications powered by `WorkManager` infrastructure.
 *   **Blood Glucose Tracking:** Log, monitor, and visualize historical blood sugar values.
 *   **Dynamic Dark / Light Mode:** Full theme support adhering to Material 3 standards.
 *   **PDF Report Export:** Export tracked data into professional PDF formats optimized for clinical reviews.
@@ -46,6 +46,6 @@ Diabetes Tracking Assistant is a modern Android application developed to help di
 
 ## 🚀 Getting Started
 
-1. Clone the repository:
+1. Clone the project:
    ```bash
    git clone [https://github.com/ismailbrngl/Diyabet-Takip-Asistani.git](https://github.com/ismailbrngl/Diyabet-Takip-Asistani.git)
