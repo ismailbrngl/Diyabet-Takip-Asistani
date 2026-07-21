@@ -15,7 +15,7 @@ Diyabet hastalarının insülin enjeksiyon saatlerini kaçırmaması, kan şeker
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/home_light.png" width="200"/> | <img src="docs/screenshots/home_dark.png" width="200"/> | <img src="docs/screenshots/glucose.png" width="200"/> | <img src="docs/screenshots/report.png" width="200"/> |
 
-> *Ekran görüntülerini `docs/screenshots/` klasörüne eklediğinde yukarıdaki tabloda otomatik görünecektir.*
+>
 
 ---
 
