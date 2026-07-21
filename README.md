@@ -1,4 +1,7 @@
 # 💉 Diyabet Takip Asistanı
+Türkçe | [English](README.en.md)
+
+---
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-7F52FF.svg?logo=kotlin)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Platform-Android-3DDC84.svg?logo=android)](https://developer.android.com)
