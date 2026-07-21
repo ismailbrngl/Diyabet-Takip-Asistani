@@ -44,8 +44,6 @@ Diabetes Tracking Assistant is a modern Android application developed to help di
 
 ---
 
-## 🚀 Getting Started
+## 📄 License
 
-1. Clone the project:
-   ```bash
-   git clone [https://github.com/ismailbrngl/Diyabet-Takip-Asistani.git](https://github.com/ismailbrngl/Diyabet-Takip-Asistani.git)
+This project is open-source and available under the [MIT License](LICENSE).
