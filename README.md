@@ -1,5 +1,7 @@
 <div align="center">
 
+**Türkçe** | [English](README.en.md)
+
 # 💉 Diyabet Takip Asistanı
 
 **Diyabet hastaları için modern, pratik ve tamamen cihaz içi (offline-first) kan şekeri ve insülin takip uygulaması.**
