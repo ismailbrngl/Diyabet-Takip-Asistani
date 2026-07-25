@@ -26,8 +26,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Test edebilmek için geçici olarak debug imzasını kullanıyoruz:
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
 

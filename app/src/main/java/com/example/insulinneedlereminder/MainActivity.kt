@@ -36,22 +36,41 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            val startDestinationId = navController.graph.findStartDestination().id
+
+            // Zaten şu an bulunulan sekmedeyse tekrar işlem yapma
             if (navController.currentDestination?.id == item.itemId) {
                 return@setOnItemSelectedListener true
             }
-            navController.navigate(
-                item.itemId,
-                null,
-                androidx.navigation.NavOptions.Builder()
-                    .setLaunchSingleTop(true)
-                    .setRestoreState(true)
-                    .setPopUpTo(
-                        navController.graph.findStartDestination().id,
-                        inclusive = false,
-                        saveState = true
-                    )
-                    .build()
-            )
+
+            // Eğer tıklanan sekme Ana Menü ise:
+            if (item.itemId == startDestinationId) {
+                // Ana Menünün üstünde birikmiş tüm alt sayfaları (Ölçüm Ekle vb.) temizle
+                navController.popBackStack(startDestinationId, false)
+                navController.navigate(
+                    startDestinationId,
+                    null,
+                    androidx.navigation.NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(false) // Kaydedilmiş eski durumu geri yükleme
+                        .build()
+                )
+            } else {
+                // Diğer sekmeler (Grafikler vb.) için standart geçiş yap
+                navController.navigate(
+                    item.itemId,
+                    null,
+                    androidx.navigation.NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(true)
+                        .setPopUpTo(
+                            startDestinationId,
+                            inclusive = false,
+                            saveState = true
+                        )
+                        .build()
+                )
+            }
             true
         }
 
